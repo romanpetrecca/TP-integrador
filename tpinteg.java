@@ -12,8 +12,6 @@ public class tpinteg {
             // asigna equipos
             game.mch[0] = inst.tms[i];
             game.mch[1] = inst.tms[i + 1];
-            game.mch[2] = inst.tms[i];
-            game.mch[3] = inst.tms[i + 1];
             game.res[0] = inst.gls[i];
             game.res[1] = inst.gls[i + 1];
             // anuncia ganador
@@ -48,8 +46,8 @@ class set {
 }
 class calc{
     // mch por partido, res por resultado
-    public String[] mch = new String[4];
-    public int[] res = new int[4];
+    public String[] mch = new String[2];
+    public int[] res = new int[2];
     // metodo principal
     public void win() {
         System.out.println("Resultado del partido:");
@@ -60,7 +58,7 @@ class calc{
             System.out.println(mch[1] + " ganó " + res[1] + " a " + res[0] + " contra " +mch[0]);
         }
         else {
-            System.out.println("Los equipos " + mch[2]  +" y " + mch[3] + " empataron con " + res[0] + " goles cada uno.");
+            System.out.println("Los equipos " + mch[0]  +" y " + mch[1] + " empataron con " + res[0] + " goles cada uno.");
         }
     }
 }
