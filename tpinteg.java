@@ -11,7 +11,7 @@ public class tpinteg {
         partidos.readResults("resultados.txt");
         // organiza todos los partidos uno por uno
         System.out.println("Resultados de la ronda: ");
-        for(int i = 0, j = 0; i < partidos.tms.length; i += 2) {
+        for(int i = 0, j = 0; i < partidos.tms.length; i += 2, j++) {
             // nueva instancia de calc
             calc play = new calc();
             // asigna equipos
@@ -21,11 +21,10 @@ public class tpinteg {
             play.res[1] = partidos.gls[i + 1];
             // anuncia ganador
             String resFin = play.win();
+            // j es para contar los indices de oraculo.str
             if(resFin.equalsIgnoreCase(oraculo.str[j])) {
                 score++;
             }
-            // j es para contar los indices de oraculo.str
-            j++;
         }
         System.out.println("Puntaje: " + Integer.toString(score));
     }
@@ -99,7 +98,7 @@ class calc {
             return mch[1];
         }
         else {
-            System.out.println("Los equipos " + mch[0]  +" y " + mch[1] + " empataron con " + res[0] + " goles cada uno.");
+            System.out.println(mch[0]  +" y " + mch[1] + " empataron con " + res[0] + " goles cada uno.");
             return "Empate";
         }
     }
