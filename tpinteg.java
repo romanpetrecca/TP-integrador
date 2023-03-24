@@ -2,40 +2,79 @@ import java.io.*;
 import java.util.Scanner;
 public class tpinteg {
     public static void main(String[] args) {
-        // nueva instancia de set
-        set inst = new set();
-        inst.readTxt();
-        // organiza todos los partidos
-        for(int i = 0; i < inst.tms.length; i += 2) {
+        // nueva instancia de pronosticos
+        setOracle oraculo = new setOracle();
+        oraculo.readPredictions("pronosticos.txt");
+        int score = 0;
+        // nueva instancia de partidos
+        setGame partidos = new setGame();
+        partidos.readResults("resultados.txt");
+        // organiza todos los partidos uno por uno
+        System.out.println("Resultados de la ronda: ");
+        for(int i = 0, j = 0; i < partidos.tms.length; i += 2) {
             // nueva instancia de calc
-            calc game = new calc();
+            calc play = new calc();
             // asigna equipos
-            game.mch[0] = inst.tms[i];
-            game.mch[1] = inst.tms[i + 1];
-            game.res[0] = inst.gls[i];
-            game.res[1] = inst.gls[i + 1];
+            play.mch[0] = partidos.tms[i];
+            play.mch[1] = partidos.tms[i + 1];
+            play.res[0] = partidos.gls[i];
+            play.res[1] = partidos.gls[i + 1];
             // anuncia ganador
-            game.win();
+            String resFin = play.win();
+            if(resFin.equalsIgnoreCase(oraculo.str[j])) {
+                score++;
+            }
+            // j es para contar los indices de oraculo.str
+            j++;
+        }
+        System.out.println("Puntaje: " + Integer.toString(score));
+    }
+}
+class setOracle {
+    // str contiene todo
+    public String[] str;
+    // metodo principal
+    public void readPredictions(String oraclePath) {
+        try {
+            // lee el archivo, guarda su totalidad en un String y su version dividida en un array
+            BufferedReader in = new BufferedReader(new FileReader(oraclePath));
+            Scanner read = new Scanner(in);
+            String whole = read.nextLine();
+            str = whole.split(",");
+            read.close();
+        }
+        catch (IOException e) {
+            System.out.println("no se encontró el archivo");
         }
     }
 }
-class set {
-    // gls por goles, tms por equipos
-    public int[] gls = new int[4];
-    public String[] tms = new String [4];
+class setGame {
+    // tms por equipos, gls por goles
+    public String[] tms;
+    public int[] gls;
     // metodo principal
-    public void readTxt() {
+    public void readResults(String gamePath) {
         try {
-            // lee archivo y separa por comas
-            BufferedReader in = new BufferedReader(new FileReader("resultados.txt"));
+            // lee el archivo, guarda su totalidad en un String y su version dividida en un array
+            BufferedReader in = new BufferedReader(new FileReader(gamePath));
             Scanner read = new Scanner(in);
-            read.useDelimiter(",");
-            // itera hasta que no hay mas valores para agregar a las listas
-            for(int i = 0; read.hasNext(); i++) {
-                String pais = read.next();
-                int gol = Integer.parseInt(read.next());
-                tms[i] = pais;
-                gls[i] = gol;
+            String whole = read.nextLine();
+            String[] allItems = whole.split(",");
+            // determina el largo de los arrays independiente de la cantidad de partidos
+            tms = new String[allItems.length / 2];
+            gls = new int[allItems.length / 2];
+            // llena los arrays con los valores correspondientes
+            for(int i = 0, j = 0, k = 0; i < allItems.length; i++) {
+                if(i % 2 == 0) {
+                    tms[j] = allItems[i];
+                    // j es para contar los indices de tms
+                    j++;
+                }
+                else {
+                    gls[k] = Integer.parseInt(allItems[i]);
+                    // k es para contar los indices de gls
+                    k++;
+                }
             }
             read.close();
         }
@@ -44,21 +83,24 @@ class set {
         }
     }
 }
-class calc{
+class calc {
     // mch por partido, res por resultado
     public String[] mch = new String[2];
     public int[] res = new int[2];
+    public String end;
     // metodo principal
-    public void win() {
-        System.out.println("Resultado del partido:");
+    public String win() {
         if(res[0] > res[1]) {
             System.out.println(mch[0] + " ganó " + res[0] + " a " + res[1] + " contra " +mch[1]);
+            return mch[0];
         }
         else if(res[1] > res[0]) {
             System.out.println(mch[1] + " ganó " + res[1] + " a " + res[0] + " contra " +mch[0]);
+            return mch[1];
         }
         else {
             System.out.println("Los equipos " + mch[0]  +" y " + mch[1] + " empataron con " + res[0] + " goles cada uno.");
+            return "Empate";
         }
     }
 }
